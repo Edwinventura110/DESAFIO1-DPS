@@ -1,37 +1,53 @@
-// src/components/SalesChart.tsx
-'use client';
-
 import React from 'react';
-import { useAppSelector } from '../redux/hooks';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
-import '../styles/dashboard.css';
 
-export default function SalesChart() {
-  const cartItems = useAppSelector((state) => state.cart.items);
+interface CartItem {
+  id: string | number;
+  title: string;
+  quantity: number;
+  price: number;
+}
 
-  const chartData = cartItems.map((item) => ({
-    title: item.title,
-    quantity: item.quantity,
-  }));
+interface SalesChartProps {
+  cartItems: CartItem[];
+}
 
+export default function SalesChart({ cartItems }: SalesChartProps) {
   return (
-    <div className="chart-section">
-      <h3 style={{ marginBottom: '1rem', color: '#0f172a' }}>Productos Agregados</h3>
-      {chartData.length === 0 ? (
-        <p style={{ color: '#64748b', textAlign: 'center', padding: '2rem' }}>
-          No hay datos suficientes para mostrar la gráfica. Agrega productos al carrito.
+    <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+      <h3 style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#0f172a', marginBottom: '1.5rem' }}>
+        Distribución de Cantidades por Producto
+      </h3>
+
+      {cartItems.length === 0 ? (
+        <p style={{ color: '#94a3b8', textAlign: 'center', padding: '2rem 0' }}>
+          No hay datos suficientes para mostrar el gráfico. Agrega productos al carrito.
         </p>
       ) : (
-        <div style={{ width: '100%', height: 300 }}>
-          <ResponsiveContainer>
-            <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="title" interval={0} tick={{ fontSize: 12 }} />
-              <YAxis allowDecimals={false} />
-              <Tooltip />
-              <Bar dataKey="quantity" fill="#0284c7" />
-            </BarChart>
-          </ResponsiveContainer>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {cartItems.map((item) => {
+            const maxQuantity = Math.max(...cartItems.map((i) => i.quantity), 1);
+            const percentage = (item.quantity / maxQuantity) * 100;
+
+            return (
+              <div key={item.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
+                  <span style={{ fontWeight: 500, color: '#334155' }}>{item.title}</span>
+                  <span style={{ fontWeight: 600, color: '#059669' }}>{item.quantity} unidades</span>
+                </div>
+                <div style={{ width: '100%', background: '#f1f5f9', borderRadius: '4px', height: '12px', overflow: 'hidden' }}>
+                  <div 
+                    style={{ 
+                      width: `${percentage}%`, 
+                      background: '#059669', 
+                      height: '100%', 
+                      borderRadius: '4px',
+                      transition: 'width 0.3s ease'
+                    }} 
+                  />
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

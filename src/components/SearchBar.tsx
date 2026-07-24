@@ -15,7 +15,6 @@ export default function SearchBar({ searchTerm, setSearchTerm }: SearchBarProps)
       <input
         type="text"
         className="search-input"
-        placeholder="Buscar libro por título..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
