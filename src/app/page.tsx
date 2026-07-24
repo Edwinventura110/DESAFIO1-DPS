@@ -4,6 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { books } from '../data/books';
 import ProductGrid from '../components/ProductGrid';
+import SearchBar from '../components/SearchBar';
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
